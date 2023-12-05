@@ -8,14 +8,48 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var word: String = ""
+
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    @State private var showingAlert = false
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List {
+                Section("Enter your word") {
+                    TextField("Your word", text: $word)
+                }
+
+                Button("Submit") {
+                    checkIfPalindrome()
+                }
+            }
+            .navigationTitle("Check If Palindrome")
+            .onSubmit(checkIfPalindrome)
+            .alert(alertTitle, isPresented: $showingAlert) { } message: {
+                Text(alertMessage)
+            }
+            .padding()
         }
-        .padding()
+    }
+
+    func checkIfPalindrome() {
+        let isPalindrome = Self.isPalindrome(word)
+        
+        if isPalindrome {
+            alertTitle = "Correct"
+            alertMessage = "Entered word is a palindrome"
+        } else {
+            alertTitle = "Incorrect"
+            alertMessage = "Entered word is not a palindrome"
+        }
+        
+        showingAlert = true
+    }
+    
+    static func isPalindrome(_ word: String) -> Bool {
+        word == String(word.reversed())
     }
 }
 
